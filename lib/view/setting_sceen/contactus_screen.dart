@@ -1,8 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class ContactUsScreen extends StatelessWidget {
   const ContactUsScreen({super.key});
+  final String email = "6xZ1N@example.com";
+  final String telegram = "https://t.me/translator_app";
+  final String github = "https://github.com/translator-app";
+  Future<void> _launchUrl(String url) async {
+    if (await canLaunchUrl(Uri.parse(url))) {
+      await launchUrl(Uri.parse(url));
+    } else {
+      throw 'Could not launch $url';
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -26,14 +37,8 @@ class ContactUsScreen extends StatelessWidget {
         child: Column(
           children: [
             ListTile(
-              onTap: () {
-                Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (context) {
-                      return const ContactUsScreen();
-                    },
-                  ),
-                );
+              onTap: () async {
+                await _launchUrl(email);
               },
               leading: const Icon(Icons.email),
               title: Text("E-mail",
@@ -45,14 +50,8 @@ class ContactUsScreen extends StatelessWidget {
             ),
             const Gap(16),
             ListTile(
-              onTap: () {
-                Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (context) {
-                      return const ContactUsScreen();
-                    },
-                  ),
-                );
+              onTap: () async {
+                await _launchUrl(telegram);
               },
               leading: const Icon(Icons.near_me),
               title: Text("Telegram",
@@ -64,14 +63,8 @@ class ContactUsScreen extends StatelessWidget {
             ),
             const Gap(16),
             ListTile(
-              onTap: () {
-                Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (context) {
-                      return const ContactUsScreen();
-                    },
-                  ),
-                );
+              onTap: () async {
+                await _launchUrl(github);
               },
               leading: const Icon(Icons.hub),
               title: Text("GitHub",
