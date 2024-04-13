@@ -9,7 +9,6 @@ import 'package:translator/model/theme_class.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-
   getItInit();
   runApp(const MyApp());
 }
@@ -44,7 +43,7 @@ class Home extends StatelessWidget {
             themeMode: state.mode,
             theme: CustomTheme.lightTheme,
             darkTheme: CustomTheme.darkThem,
-            home: HomeScreen());
+            home: const HomeScreen());
       },
     );
   }

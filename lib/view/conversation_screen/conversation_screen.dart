@@ -52,7 +52,7 @@ class VoiceScreen extends StatelessWidget {
                     Expanded(child: _fromVoiceButton(context, state.from))
                   ],
                 ),
-                const Gap(85),
+                const Gap(75),
               ],
             ),
           ),

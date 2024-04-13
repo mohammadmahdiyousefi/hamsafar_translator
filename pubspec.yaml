@@ -48,6 +48,8 @@ dependencies:
   speech_to_text_google_dialog: ^0.0.6
   fluttertoast: ^8.2.4
   url_launcher: ^6.2.6
+  package_info_plus: ^7.0.0
+  android_intent_plus: ^5.0.2
 
   
 
@@ -61,6 +63,13 @@ dev_dependencies:
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
   flutter_lints: ^3.0.0
+  flutter_launcher_icons: ^0.13.1
+flutter_launcher_icons:
+  android: true
+  ios: true
+  image_path: "assets/images/app_icon/Google-Translate-icon.png"
+  adaptive_icon_foreground: "assets/images/app_icon/Google-Translate-icon_background.png"
+  adaptive_icon_background: "#ffffff"
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
@@ -77,6 +86,7 @@ flutter:
   assets:
     - assets/images/
     - assets/images/flag/
+    - assets/images/app_icon/
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see

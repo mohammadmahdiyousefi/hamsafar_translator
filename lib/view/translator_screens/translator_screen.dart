@@ -56,7 +56,7 @@ class _TranslatorScreenState extends State<TranslatorScreen> {
                   _result(context, state.result),
                   const Gap(16),
                   _resultController(context, state.result, state.to),
-                  const Gap(100),
+                  const Gap(80),
                 ],
               ),
             ),
@@ -191,11 +191,12 @@ class _TranslatorScreenState extends State<TranslatorScreen> {
         children: [
           Text(
             "Translate from ",
-            style: Theme.of(context).textTheme.bodyMedium,
+            style: Theme.of(context).textTheme.bodySmall,
           ),
           (fromstate is TranslateFromStatelanguage)
               ? Text(
                   "(${fromstate.language.language})",
+                  style: Theme.of(context).textTheme.bodySmall,
                 )
               : const SizedBox()
         ],
@@ -343,10 +344,14 @@ class _TranslatorScreenState extends State<TranslatorScreen> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
-          const Text("Translate to "),
+          Text(
+            "Translate to ",
+            style: Theme.of(context).textTheme.bodySmall,
+          ),
           (tostate is TranslateToStatelanguage)
               ? Text(
                   "(${tostate.language.language})",
+                  style: Theme.of(context).textTheme.bodySmall,
                 )
               : const SizedBox()
         ],

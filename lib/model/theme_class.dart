@@ -4,7 +4,7 @@ class CustomTheme {
   static final ThemeData darkThem = ThemeData(
       useMaterial3: true,
       navigationBarTheme: NavigationBarThemeData(
-        height: 65,
+        height: 56,
         elevation: 0,
         labelBehavior: NavigationDestinationLabelBehavior.onlyShowSelected,
         indicatorShape: RoundedRectangleBorder(
@@ -18,7 +18,7 @@ class CustomTheme {
               color: Color(0xFFFFFFFF),
               fontFamily: "ROBR",
               fontWeight: FontWeight.w400,
-              fontSize: 12),
+              fontSize: 10),
         ),
       ),
       appBarTheme: const AppBarTheme(
@@ -66,6 +66,11 @@ class CustomTheme {
             fontFamily: "ROBR",
             fontWeight: FontWeight.w500,
             fontSize: 12),
+        labelMedium: TextStyle(
+            color: Color(0xFFFFFFFF),
+            fontFamily: "ROBM",
+            fontWeight: FontWeight.w600,
+            fontSize: 14),
       ),
       iconTheme: const IconThemeData(color: Colors.white),
       cardColor: const Color(0xFF28282a),
@@ -75,7 +80,7 @@ class CustomTheme {
   static final ThemeData lightTheme = ThemeData(
       useMaterial3: true,
       navigationBarTheme: NavigationBarThemeData(
-        height: 65,
+        height: 56,
         elevation: 0,
         labelBehavior: NavigationDestinationLabelBehavior.onlyShowSelected,
         indicatorShape:
@@ -88,7 +93,7 @@ class CustomTheme {
               color: Color(0xFFFFFFFF),
               fontFamily: "ROBR",
               fontWeight: FontWeight.w400,
-              fontSize: 12),
+              fontSize: 10),
         ),
       ),
       appBarTheme: const AppBarTheme(
@@ -136,6 +141,11 @@ class CustomTheme {
             fontFamily: "ROBR",
             fontWeight: FontWeight.w500,
             fontSize: 12),
+        labelMedium: TextStyle(
+            color: Color(0xFF000000),
+            fontFamily: "ROBM",
+            fontWeight: FontWeight.w600,
+            fontSize: 14),
       ),
       iconTheme: const IconThemeData(color: Colors.black),
       cardColor: const Color(0xFFFFFFFF),

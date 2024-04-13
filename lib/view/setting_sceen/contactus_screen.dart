@@ -4,14 +4,13 @@ import 'package:url_launcher/url_launcher.dart';
 
 class ContactUsScreen extends StatelessWidget {
   const ContactUsScreen({super.key});
-  final String email = "6xZ1N@example.com";
+  final String email = "mailto:mmye1481@gmail.com";
   final String telegram = "https://t.me/translator_app";
   final String github = "https://github.com/translator-app";
   Future<void> _launchUrl(String url) async {
-    if (await canLaunchUrl(Uri.parse(url))) {
+    bool isInstalled = await canLaunchUrl(Uri.parse(url));
+    if (isInstalled == false) {
       await launchUrl(Uri.parse(url));
-    } else {
-      throw 'Could not launch $url';
     }
   }
 
@@ -20,6 +19,8 @@ class ContactUsScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.background,
       appBar: AppBar(
+        backgroundColor: Theme.of(context).colorScheme.background,
+        scrolledUnderElevation: 0,
         leading: IconButton(
           onPressed: () {
             Navigator.of(context).pop();
@@ -36,6 +37,7 @@ class ContactUsScreen extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 16),
         child: Column(
           children: [
+            const Gap(16),
             ListTile(
               onTap: () async {
                 await _launchUrl(email);

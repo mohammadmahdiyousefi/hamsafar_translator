@@ -69,30 +69,36 @@ class _HomeScreenState extends State<HomeScreen> {
                 icon: Icon(
                   Icons.translate,
                   color: Colors.white70,
+                  size: 20,
                 ),
                 selectedIcon: Icon(
                   Icons.translate,
                   color: Colors.white,
+                  size: 20,
                 ),
                 label: "Translate"),
             NavigationDestination(
                 icon: Icon(
                   Icons.record_voice_over,
                   color: Colors.white70,
+                  size: 20,
                 ),
                 selectedIcon: Icon(
                   Icons.record_voice_over,
                   color: Colors.white,
+                  size: 20,
                 ),
                 label: "Conversation"),
             NavigationDestination(
                 icon: Icon(
                   Icons.settings,
                   color: Colors.white70,
+                  size: 20,
                 ),
                 selectedIcon: Icon(
                   Icons.settings,
                   color: Colors.white,
+                  size: 20,
                 ),
                 label: "Setting")
           ],
