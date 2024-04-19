@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:ui';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -12,8 +13,19 @@ part 'translator_event.dart';
 part 'translator_state.dart';
 
 class TranslatorBloc extends Bloc<TranslatorEvent, TranslatorState> {
-  Country? from;
-  Country? to;
+  Country from = Country(
+      name: "Auto",
+      language: "Auto",
+      flag: "assets/images/flag/All country.png",
+      code: "auto",
+      textDirection: TextDirection.ltr);
+  Country to = Country(
+    name: 'Iran',
+    language: 'Persian',
+    flag: 'assets/images/flag/ir.png',
+    code: 'fa',
+    textDirection: TextDirection.rtl,
+  );
   String text = "";
   String result = "";
   final GoogleTranslator translator = GoogleTranslator();
@@ -26,20 +38,36 @@ class TranslatorBloc extends Bloc<TranslatorEvent, TranslatorState> {
     on<TranslatorEventInitial>(
       (event, emit) async {
         try {
-          from = await getFromLanguage();
-          if (from != null) {
-            emit(
-              state.copyWith(
-                newfrom: TranslateFromStatelanguage(language: from!),
-              ),
-            );
-          } else {
-            emit(
-              state.copyWith(
-                newfrom: TranslateFromStateInitial(),
-              ),
-            );
-          }
+          await getFromLanguage().then(
+            (value) async {
+              if (value != null) {
+                from = value;
+                emit(
+                  state.copyWith(
+                    newfrom: TranslateFromStatelanguage(language: from),
+                  ),
+                );
+              } else {
+                await saveFromLanguage(from).then(
+                  (value) {
+                    if (value == true) {
+                      emit(
+                        state.copyWith(
+                          newfrom: TranslateFromStatelanguage(language: from),
+                        ),
+                      );
+                    } else {
+                      emit(
+                        state.copyWith(
+                          newfrom: TranslateFromStateInitial(),
+                        ),
+                      );
+                    }
+                  },
+                );
+              }
+            },
+          );
         } catch (e) {
           emit(
             state.copyWith(
@@ -50,20 +78,34 @@ class TranslatorBloc extends Bloc<TranslatorEvent, TranslatorState> {
           );
         }
         try {
-          to = await getToLanguage();
-          if (to != null) {
-            emit(
-              state.copyWith(
-                newto: TranslateToStatelanguage(language: to!),
-              ),
-            );
-          } else {
-            emit(
-              state.copyWith(
-                newto: TranslateToStateInitial(),
-              ),
-            );
-          }
+          await getToLanguage().then(
+            (value) async {
+              if (value != null) {
+                to = value;
+                emit(
+                  state.copyWith(
+                    newto: TranslateToStatelanguage(language: to),
+                  ),
+                );
+              } else {
+                await saveToLanguage(to).then(
+                  (value) {
+                    if (value == true) {
+                      emit(state.copyWith(
+                        newto: TranslateToStatelanguage(language: to),
+                      ));
+                    } else {
+                      emit(
+                        state.copyWith(
+                          newto: TranslateToStateInitial(),
+                        ),
+                      );
+                    }
+                  },
+                );
+              }
+            },
+          );
         } catch (e) {
           emit(
             state.copyWith(
@@ -78,55 +120,53 @@ class TranslatorBloc extends Bloc<TranslatorEvent, TranslatorState> {
     );
     on<TranslatorEventSetFrom>(
       (event, emit) async {
-        from = event.from;
-        if (from != null) {
-          await saveFromLanguage(from!).then(
-            (value) {
-              if (value == true) {
-                emit(
-                  state.copyWith(
-                    newfrom: TranslateFromStatelanguage(language: from!),
-                  ),
-                );
-              } else {
-                emit(
-                  state.copyWith(
-                    newfrom: TranslateFromStateError(
-                        error: "Something went wrong to set language"),
-                  ),
-                );
-              }
-            },
-          );
-        }
+        from = event.from ?? from;
+
+        await saveFromLanguage(from).then(
+          (value) {
+            if (value == true) {
+              emit(
+                state.copyWith(
+                  newfrom: TranslateFromStatelanguage(language: from),
+                ),
+              );
+            } else {
+              emit(
+                state.copyWith(
+                  newfrom: TranslateFromStateError(
+                      error: "Something went wrong to set language"),
+                ),
+              );
+            }
+          },
+        );
       },
     );
     on<TranslatorEventSetTo>(
       (event, emit) async {
-        to = event.to;
-        if (to != null) {
-          await saveToLanguage(to!).then(
-            (value) {
-              if (value == true) {
-                emit(state.copyWith(
-                  newto: TranslateToStatelanguage(language: to!),
-                ));
-              } else {
-                emit(
-                  state.copyWith(
-                    newto: TranslateToStateError(
-                        error: "Something went wrong to set language"),
-                  ),
-                );
-              }
-            },
-          );
-        }
+        to = event.to ?? to;
+
+        await saveToLanguage(to).then(
+          (value) {
+            if (value == true) {
+              emit(state.copyWith(
+                newto: TranslateToStatelanguage(language: to),
+              ));
+            } else {
+              emit(
+                state.copyWith(
+                  newto: TranslateToStateError(
+                      error: "Something went wrong to set language"),
+                ),
+              );
+            }
+          },
+        );
       },
     );
     on<TranslatorEventTranslate>((event, emit) async {
       text = event.text ?? text;
-      if (from == null || to == null) {
+      if (text.isEmpty) {
         result = "";
         emit(
           state.copyWith(
@@ -134,50 +174,40 @@ class TranslatorBloc extends Bloc<TranslatorEvent, TranslatorState> {
           ),
         );
       } else {
-        if (text.isEmpty) {
-          result = "";
+        try {
+          emit(state.copyWith(newresult: TranslateResultStateLoading()));
+          await translator
+              .translate(text, from: from.code, to: to.code)
+              .then((value) {
+            result = value.text;
+          });
           emit(
             state.copyWith(
-              newresult: TranslateResultStateEmpty(),
+              newresult: TranslateResultStateSuccess(
+                  result: result, textDirection: to.textDirection),
             ),
           );
-        } else {
-          try {
-            emit(state.copyWith(newresult: TranslateResultStateLoading()));
-            await translator
-                .translate(text, from: from!.code, to: to!.code)
-                .then((value) {
-              result = value.text;
-            });
-            emit(
-              state.copyWith(
-                newresult: TranslateResultStateSuccess(
-                    result: result, textDirection: to!.textDirection),
+        } catch (ex) {
+          emit(
+            state.copyWith(
+              newresult: TranslateResultStateError(
+                error: ex.toString(),
               ),
-            );
-          } catch (ex) {
-            emit(
-              state.copyWith(
-                newresult: TranslateResultStateError(
-                  error: ex.toString(),
-                ),
-              ),
-            );
-          }
+            ),
+          );
         }
       }
     });
-    on<TranslatorEventChangeLanguage>((event, emit) async {
-      if (from == null || to == null) {
-      } else {
-        if (from!.name != "Auto") {
-          Country change = from!;
+    on<TranslatorEventChangeLanguage>(
+      (event, emit) async {
+        if (from.name != "Auto") {
+          Country change = from;
           from = to;
           to = change;
-          await saveToLanguage(to!).then((value) {
+          await saveToLanguage(to).then((value) {
             if (value == true) {
               emit(state.copyWith(
-                newto: TranslateToStatelanguage(language: to!),
+                newto: TranslateToStatelanguage(language: to),
               ));
             } else {
               emit(
@@ -188,10 +218,10 @@ class TranslatorBloc extends Bloc<TranslatorEvent, TranslatorState> {
               );
             }
           });
-          await saveFromLanguage(from!).then((value) {
+          await saveFromLanguage(from).then((value) {
             if (value == true) {
               emit(state.copyWith(
-                newfrom: TranslateFromStatelanguage(language: from!),
+                newfrom: TranslateFromStatelanguage(language: from),
               ));
             } else {
               emit(
@@ -208,14 +238,14 @@ class TranslatorBloc extends Bloc<TranslatorEvent, TranslatorState> {
             try {
               emit(state.copyWith(newresult: TranslateResultStateLoading()));
               await translator
-                  .translate(text, from: from!.code, to: to!.code)
+                  .translate(text, from: from.code, to: to.code)
                   .then((value) {
                 result = value.text;
               });
               emit(
                 state.copyWith(
                   newresult: TranslateResultStateSuccess(
-                      result: result, textDirection: to!.textDirection),
+                      result: result, textDirection: to.textDirection),
                 ),
               );
             } catch (ex) {
@@ -229,8 +259,8 @@ class TranslatorBloc extends Bloc<TranslatorEvent, TranslatorState> {
             }
           }
         }
-      }
-    });
+      },
+    );
   }
   Future<bool> saveFromLanguage(Country fromLanguage) async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();

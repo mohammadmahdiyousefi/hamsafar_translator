@@ -2,17 +2,24 @@ import 'package:android_intent_plus/android_intent.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:translator/bloc/theme/theme_bloc.dart';
 import 'package:translator/bloc/theme/theme_event.dart';
 import 'package:translator/bloc/theme/theme_state.dart';
+import 'package:translator/bloc/updateversion/updateversion_bloc.dart';
 import 'package:translator/view/setting_sceen/about.dart';
+import 'package:translator/view/setting_sceen/ads_screen.dart';
+import 'package:translator/view/setting_sceen/app_language_screen.dart';
 import 'package:translator/view/setting_sceen/contactus_screen.dart';
 import 'package:translator/view/setting_sceen/pronunciation_setting.dart';
 import 'package:translator/view/setting_sceen/terms_and_condition.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class SttingScreen extends StatelessWidget {
   const SttingScreen({super.key});
+  final String shareLink =
+      "https://cafebazaar.ir/app/com.example.hamsafar_translator";
   Widget customDivider(BuildContext context, String text) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8),
@@ -21,10 +28,14 @@ class SttingScreen extends StatelessWidget {
           Text(text,
               style: Theme.of(context).textTheme.bodySmall!.copyWith(
                   color: Colors.grey,
-                  fontSize: 12,
+                  fontSize: 10,
                   fontWeight: FontWeight.w600)),
           const Gap(8),
-          const Expanded(child: Divider())
+          const Expanded(
+              child: Divider(
+            color: Colors.grey,
+            endIndent: 8,
+          ))
         ],
       ),
     );
@@ -32,16 +43,17 @@ class SttingScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Theme.of(context).colorScheme.background,
-      body: SafeArea(
-        child: Padding(
+    return SafeArea(
+      child: Scaffold(
+        backgroundColor: Theme.of(context).colorScheme.background,
+        body: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16),
           child: SingleChildScrollView(
             child: Column(
               children: [
                 const Gap(16),
-                customDivider(context, "Theme"),
+                customDivider(
+                    context, AppLocalizations.of(context)!.themeDivider),
                 BlocBuilder<ThemeBloc, ThemeState>(
                   builder: (context, state) {
                     return ListTile(
@@ -53,7 +65,7 @@ class SttingScreen extends StatelessWidget {
                         }
                       },
                       leading: const Icon(Icons.dark_mode),
-                      title: Text("Dark Mode",
+                      title: Text(AppLocalizations.of(context)!.themeMode,
                           style:
                               Theme.of(context).listTileTheme.titleTextStyle),
                       trailing: Switch(
@@ -69,14 +81,47 @@ class SttingScreen extends StatelessWidget {
                     );
                   },
                 ),
-                const Gap(16),
-                customDivider(context, "Speech Settings"),
+                const Gap(8),
+                customDivider(
+                    context, AppLocalizations.of(context)!.adsDivider),
+                ListTile(
+                  onTap: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) {
+                          return const AdsRemoverScreen();
+                        },
+                      ),
+                    );
+                  },
+                  leading: const Icon(Icons.live_tv),
+                  title: Text(AppLocalizations.of(context)!.removeAds,
+                      style: Theme.of(context).listTileTheme.titleTextStyle),
+                ),
+                const Gap(8),
+                customDivider(
+                    context, AppLocalizations.of(context)!.languageAppBar),
+                ListTile(
+                  onTap: () async {
+                    Navigator.of(context).push(MaterialPageRoute(
+                      builder: (context) {
+                        return const AppLanguageScreen();
+                      },
+                    ));
+                  },
+                  leading: const Icon(Icons.language),
+                  title: Text(AppLocalizations.of(context)!.appLanguage,
+                      style: Theme.of(context).listTileTheme.titleTextStyle),
+                ),
+                const Gap(8),
+                customDivider(context,
+                    AppLocalizations.of(context)!.speechSettingDivider),
                 ListTile(
                   onTap: () async {
                     await debugdiolog(context);
                   },
                   leading: const Icon(Icons.bug_report),
-                  title: Text("Fixed speech bug",
+                  title: Text(AppLocalizations.of(context)!.fixedSpeechBug,
                       style: Theme.of(context).listTileTheme.titleTextStyle),
                 ),
                 const Gap(16),
@@ -89,7 +134,8 @@ class SttingScreen extends StatelessWidget {
                     ));
                   },
                   leading: const Icon(Icons.record_voice_over),
-                  title: Text("pronunciation settings",
+                  title: Text(
+                      AppLocalizations.of(context)!.pronunciationSettings,
                       style: Theme.of(context).listTileTheme.titleTextStyle),
                 ),
                 const Gap(16),
@@ -100,16 +146,21 @@ class SttingScreen extends StatelessWidget {
                     );
                     await intent.launch();
                   },
-                  leading: const Icon(Icons.settings_accessibility),
-                  title: Text("pronunciation settings on the device",
+                  leading: const Icon(Icons.settings_voice),
+                  title: Text(
+                      AppLocalizations.of(context)!
+                          .pronunciationSettingsOnTheDevice,
                       style: Theme.of(context).listTileTheme.titleTextStyle),
                 ),
-                const Gap(16),
-                customDivider(context, "Community"),
+                const Gap(8),
+                customDivider(
+                    context, AppLocalizations.of(context)!.communityDivider),
                 ListTile(
-                  onTap: () {},
+                  onTap: () async {
+                    await Share.shareUri(Uri.parse(shareLink));
+                  },
                   leading: const Icon(Icons.share),
-                  title: Text("Share",
+                  title: Text(AppLocalizations.of(context)!.share,
                       style: Theme.of(context).listTileTheme.titleTextStyle),
                 ),
                 const Gap(16),
@@ -124,11 +175,12 @@ class SttingScreen extends StatelessWidget {
                     );
                   },
                   leading: const Icon(Icons.support_agent),
-                  title: Text("Contact Us",
+                  title: Text(AppLocalizations.of(context)!.contactUs,
                       style: Theme.of(context).listTileTheme.titleTextStyle),
                 ),
-                const Gap(16),
-                customDivider(context, "Help"),
+                const Gap(8),
+                customDivider(
+                    context, AppLocalizations.of(context)!.helpDivider),
                 ListTile(
                   onTap: () {
                     Navigator.of(context).push(
@@ -140,7 +192,7 @@ class SttingScreen extends StatelessWidget {
                     );
                   },
                   leading: const Icon(Icons.balance),
-                  title: Text("Terms & Conditions",
+                  title: Text(AppLocalizations.of(context)!.termsandConditions,
                       style: Theme.of(context).listTileTheme.titleTextStyle),
                 ),
                 const Gap(16),
@@ -149,13 +201,16 @@ class SttingScreen extends StatelessWidget {
                     Navigator.of(context).push(
                       MaterialPageRoute(
                         builder: (context) {
-                          return const AboutScreen();
+                          return BlocProvider(
+                            create: (context) => UpdateversionBloc(),
+                            child: AboutScreen(),
+                          );
                         },
                       ),
                     );
                   },
                   leading: const Icon(Icons.info),
-                  title: Text("About",
+                  title: Text(AppLocalizations.of(context)!.about,
                       style: Theme.of(context).listTileTheme.titleTextStyle),
                 ),
                 const Gap(75)
@@ -169,15 +224,14 @@ class SttingScreen extends StatelessWidget {
 
   Future debugdiolog(BuildContext context) async {
     const String googlelink =
-        "https://play.google.com/store/apps/details?id=com.google.android.tts&pcampaignid=web_share";
+        "https://play.google.com/store/apps/details?id=com.google.android.tts";
     await showDialog(
       context: context,
       builder: (context) {
         return AlertDialog(
           title: Text(
-            "If the pronunciation or speech recognition section does not work for you, it may be because Google services are not installed or updated, install and update the speech recognition service as soon as possible.",
+            AppLocalizations.of(context)!.fixedSpeechDiolog,
             style: Theme.of(context).textTheme.titleSmall,
-            textDirection: TextDirection.ltr,
           ),
           content: Row(
             children: [
@@ -185,17 +239,24 @@ class SttingScreen extends StatelessWidget {
                 onPressed: () {
                   Navigator.of(context).pop();
                 },
-                child: const Text("Cancel"),
+                child: Text(AppLocalizations.of(context)!.cancelButton),
               ),
               const Spacer(),
               TextButton(
                 onPressed: () async {
-                  bool isInstalled = await canLaunchUrl(Uri.parse(googlelink));
-                  if (isInstalled == false) {
-                    await launchUrl(Uri.parse(googlelink));
-                  }
+                  await canLaunchUrl(Uri.parse(googlelink)).then((value) async {
+                    if (value) {
+                      await launchUrl(
+                        Uri.parse(googlelink),
+                      );
+                    } else {
+                      await launchUrl(Uri.parse(googlelink),
+                          mode: LaunchMode.externalApplication);
+                    }
+                  });
                 },
-                child: const Text("Update & Install"),
+                child:
+                    Text(AppLocalizations.of(context)!.fixedSpeechUpdateButton),
               ),
             ],
           ),

@@ -1,6 +1,4 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
 import 'package:translator/bloc/conversation_bloc/conversation_bloc.dart';
@@ -22,11 +20,11 @@ class VoiceScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<ConversationBloc, ConversationState>(
       builder: (context, state) {
-        return Scaffold(
-          resizeToAvoidBottomInset: false,
-          backgroundColor: Theme.of(context).colorScheme.background,
-          body: SafeArea(
-            child: Column(
+        return SafeArea(
+          child: Scaffold(
+            resizeToAvoidBottomInset: false,
+            backgroundColor: Theme.of(context).colorScheme.background,
+            body: Column(
               children: [
                 Expanded(
                   child: _conversationFromFild(
@@ -389,7 +387,7 @@ class VoiceScreen extends StatelessWidget {
 
   Widget _toVoiceButton(BuildContext context, ConversationToState toState) {
     return CircleAvatar(
-      backgroundColor: Colors.red,
+      backgroundColor: const Color(0xFFC20000),
       radius: 30,
       child: GestureDetector(
         onTap: () async {

@@ -1,7 +1,9 @@
+import 'package:adivery/adivery_ads.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:gap/gap.dart';
 import 'package:translator/service/text_to_speech.dart';
+import 'package:translator/widget/banner_ads.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class PronuncaitionScreen extends StatelessWidget {
   const PronuncaitionScreen({super.key});
@@ -21,21 +23,67 @@ class PronuncaitionScreen extends StatelessWidget {
               color: Theme.of(context).iconTheme.color),
         ),
         title: Text(
-          "Pronunciation",
+          AppLocalizations.of(context)!.pronunciationAppBarTitle,
           style: Theme.of(context).appBarTheme.titleTextStyle,
         ),
       ),
-      body: const Padding(
-        padding: EdgeInsets.symmetric(horizontal: 16),
-        child: Column(
-          children: [
-            Gap(16),
-            PitchControllerWidget(),
-            Gap(8),
-            SpeechRateControllerWidget(),
-            Gap(8),
-            VolumeControllerWidget()
-          ],
+      body: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16),
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              const Gap(16),
+              const PitchControllerWidget(),
+              const Gap(8),
+              const SpeechRateControllerWidget(),
+              const Gap(8),
+              const VolumeControllerWidget(),
+              const Gap(8),
+              Row(
+                children: [
+                  const Gap(8),
+                  Expanded(
+                      child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                              elevation: 0,
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(12)),
+                              backgroundColor: Theme.of(context).cardColor),
+                          onPressed: () {
+                            TextToSpeech.speek(
+                                "this is an example of speech synthesis in english",
+                                "en");
+                          },
+                          child: Text(
+                            AppLocalizations.of(context)!
+                                .pronunciationPlayButton,
+                            style: Theme.of(context).textTheme.bodyMedium,
+                          ))),
+                  const Gap(16),
+                  Expanded(
+                      child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                              elevation: 0,
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(12)),
+                              backgroundColor: Theme.of(context).cardColor),
+                          onPressed: () async {
+                            await TextToSpeech.setPitch(1);
+                            await TextToSpeech.setSpeechRate(0.3);
+                            await TextToSpeech.setVolume(1);
+                          },
+                          child: Text(
+                            AppLocalizations.of(context)!
+                                .pronunciationResetButton,
+                            style: Theme.of(context).textTheme.bodyMedium,
+                          ))),
+                  const Gap(8),
+                ],
+              ),
+              const Gap(32),
+              creatabannerad(BannerAdSize.MEDIUM_RECTANGLE) ?? const SizedBox()
+            ],
+          ),
         ),
       ),
     );
@@ -71,7 +119,7 @@ class _PitchControllerWidgetState extends State<PitchControllerWidget> {
             children: [
               Expanded(
                 child: Text(
-                  "Pitch",
+                  AppLocalizations.of(context)!.pronunciationPitch,
                   style: Theme.of(context).textTheme.labelMedium,
                 ),
               ),
@@ -141,12 +189,12 @@ class _SpeechRateControllerWidgetState
             children: [
               Expanded(
                 child: Text(
-                  "Speechrate",
+                  AppLocalizations.of(context)!.pronunciationSpeechRate,
                   style: Theme.of(context).textTheme.labelMedium,
                 ),
               ),
               Text(
-                speechrate.toStringAsFixed(2),
+                (speechrate * 100).round().toString(),
                 style: Theme.of(context).textTheme.labelMedium,
               ),
             ],
@@ -209,12 +257,12 @@ class _VolumeControllerWidgetState extends State<VolumeControllerWidget> {
             children: [
               Expanded(
                 child: Text(
-                  "Volume",
+                  AppLocalizations.of(context)!.pronunciationVolume,
                   style: Theme.of(context).textTheme.labelMedium,
                 ),
               ),
               Text(
-                volume.toStringAsFixed(2),
+                (volume * 100).round().toString(),
                 style: Theme.of(context).textTheme.labelMedium,
               ),
             ],

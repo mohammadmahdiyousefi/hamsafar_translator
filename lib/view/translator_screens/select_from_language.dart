@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
-import 'package:translator/bloc/theme/theme_bloc.dart';
-import 'package:translator/bloc/theme/theme_state.dart';
 import 'package:translator/bloc/translator_screen/translator_bloc.dart';
 import 'package:translator/model/country.dart';
 import 'package:translator/model/list_of_country.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class SelectFromLanguage extends StatefulWidget {
   const SelectFromLanguage({super.key});
@@ -23,7 +22,7 @@ class _SelectFromLanguageState extends State<SelectFromLanguage> {
       appBar: AppBar(
           backgroundColor: Colors.transparent,
           scrolledUnderElevation: 0,
-          title: Text("Language",
+          title: Text(AppLocalizations.of(context)!.languageAppBar,
               style: Theme.of(context).appBarTheme.titleTextStyle),
           centerTitle: true,
           leading: IconButton(
@@ -53,7 +52,7 @@ class _SelectFromLanguageState extends State<SelectFromLanguage> {
                 },
                 decoration: InputDecoration(
                     border: InputBorder.none,
-                    hintText: 'Search',
+                    hintText: AppLocalizations.of(context)!.searchHintText,
                     hintStyle:
                         Theme.of(context).listTileTheme.subtitleTextStyle,
                     prefixIcon: const Icon(
@@ -64,13 +63,15 @@ class _SelectFromLanguageState extends State<SelectFromLanguage> {
           GestureDetector(
             onTap: () {
               BlocProvider.of<TranslatorBloc>(context).add(
-                  TranslatorEventSetFrom(
-                      from: Country(
-                          name: "Auto",
-                          language: "Auto",
-                          flag: "assets/images/flag/All country.png",
-                          code: "auto",
-                          textDirection: TextDirection.ltr)));
+                TranslatorEventSetFrom(
+                  from: Country(
+                      name: "Auto",
+                      language: "Auto",
+                      flag: "assets/images/flag/All country.png",
+                      code: "auto",
+                      textDirection: TextDirection.ltr),
+                ),
+              );
               Navigator.pop(context);
             },
             child: Container(
@@ -165,29 +166,6 @@ class _SelectFromLanguageState extends State<SelectFromLanguage> {
                     ),
                   ),
                 );
-
-                // Padding(
-                //   padding: const EdgeInsets.symmetric(
-                //       horizontal: 16, vertical: 5),
-                //   child: ListTile(
-                //     // tileColor: Colors.white,
-
-                //     shape: RoundedRectangleBorder(
-                //         borderRadius: BorderRadius.circular(16)),
-                //     leading: SizedBox(
-                //       height: 30,
-                //       width: 30,
-                //       child: Image(
-                //         image: AssetImage(listOfCountry[index].flag),
-                //         height: 30,
-                //         width: 30,
-                //       ),
-                //     ),
-                //     title: Text(listOfCountry[index].name),
-                //     subtitle: Text(listOfCountry[index].language),
-                //     trailing: Text(listOfCountry[index].code),
-                //   ),
-                // );
               },
             ),
           ),

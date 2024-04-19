@@ -9,8 +9,11 @@ import 'package:translator/bloc/translator_screen/translator_bloc.dart';
 import 'package:translator/bloc/translator_screen/translator_to_state.dart';
 import 'package:translator/di/di.dart';
 import 'package:translator/service/text_to_speech.dart';
+import 'package:translator/service/toast.dart';
 import 'package:translator/view/translator_screens/select_from_language.dart';
 import 'package:translator/view/translator_screens/select_to_language.dart';
+import 'package:translator/widget/prepare_interstitial_ad.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class TranslatorScreen extends StatefulWidget {
   const TranslatorScreen({super.key});
@@ -21,16 +24,20 @@ class TranslatorScreen extends StatefulWidget {
 
 class _TranslatorScreenState extends State<TranslatorScreen> {
   final TextEditingController text = TextEditingController();
+  @override
+  void initState() {
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<TranslatorBloc, TranslatorState>(
       builder: (context, state) {
-        return Scaffold(
-          resizeToAvoidBottomInset: false,
-          backgroundColor: Theme.of(context).colorScheme.background,
-          body: SafeArea(
-            child: SingleChildScrollView(
+        return SafeArea(
+          child: Scaffold(
+            resizeToAvoidBottomInset: false,
+            backgroundColor: Theme.of(context).colorScheme.background,
+            body: SingleChildScrollView(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -113,7 +120,7 @@ class _TranslatorScreenState extends State<TranslatorScreen> {
                     children: [
                       Expanded(
                           child: Text(
-                        "Select language",
+                        AppLocalizations.of(context)!.selectLanguage,
                         style: Theme.of(context).textTheme.bodySmall,
                         overflow: TextOverflow.ellipsis,
                       )),
@@ -171,7 +178,8 @@ class _TranslatorScreenState extends State<TranslatorScreen> {
               : Row(
                   children: [
                     Expanded(
-                        child: Text("Select language",
+                        child: Text(
+                            AppLocalizations.of(context)!.selectLanguage,
                             style: Theme.of(context).textTheme.bodySmall,
                             overflow: TextOverflow.ellipsis)),
                     const Gap(6),
@@ -190,7 +198,7 @@ class _TranslatorScreenState extends State<TranslatorScreen> {
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
           Text(
-            "Translate from ",
+            AppLocalizations.of(context)!.translateFrom,
             style: Theme.of(context).textTheme.bodySmall,
           ),
           (fromstate is TranslateFromStatelanguage)
@@ -230,7 +238,7 @@ class _TranslatorScreenState extends State<TranslatorScreen> {
         decoration: InputDecoration(
           contentPadding:
               const EdgeInsets.symmetric(horizontal: 16, vertical: 15),
-          hintText: 'Enter text',
+          hintText: AppLocalizations.of(context)!.translateHintText,
           hintTextDirection: (fromstate is TranslateFromStatelanguage)
               ? fromstate.language.textDirection
               : TextDirection.ltr,
@@ -268,7 +276,7 @@ class _TranslatorScreenState extends State<TranslatorScreen> {
       height: 50,
       width: double.infinity,
       margin: const EdgeInsets.symmetric(horizontal: 16),
-      padding: const EdgeInsets.only(left: 0, right: 8, top: 0, bottom: 0),
+      padding: const EdgeInsets.only(left: 0, right: 0, top: 0, bottom: 0),
       decoration: BoxDecoration(
           color: Theme.of(context).cardColor,
           borderRadius: BorderRadius.circular(14)),
@@ -306,10 +314,14 @@ class _TranslatorScreenState extends State<TranslatorScreen> {
           IconButton(
             onPressed: () {
               if (text.text.isNotEmpty) {
-                Clipboard.setData(ClipboardData(text: text.text)).then((value) {
-                  ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                      content: Text('Copied to your clipboard !')));
-                });
+                Clipboard.setData(ClipboardData(text: text.text)).then(
+                  (value) {
+                    ToastMessage.showCustomToast(
+                        context,
+                        AppLocalizations.of(context)!.copyMessage,
+                        const Color(0xFF373737));
+                  },
+                );
               }
             },
             icon: const Icon(
@@ -318,21 +330,24 @@ class _TranslatorScreenState extends State<TranslatorScreen> {
             ),
           ),
           const Spacer(),
-          Container(
-            height: 38,
-            width: 60,
-            decoration: BoxDecoration(
-                color: Theme.of(context).primaryColor,
-                borderRadius: BorderRadius.circular(14)),
-            child: IconButton(
-              onPressed: () {
-                BlocProvider.of<TranslatorBloc>(context)
-                    .add(TranslatorEventTranslate(text: text.text));
-                FocusScope.of(context).unfocus();
-              },
-              icon: const Icon(Icons.send_rounded, color: Colors.white),
+          GestureDetector(
+            onTap: () {
+              showInterstitial();
+              BlocProvider.of<TranslatorBloc>(context)
+                  .add(TranslatorEventTranslate(text: text.text));
+              FocusScope.of(context).unfocus();
+            },
+            child: Container(
+              height: 38,
+              width: 70,
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              decoration: BoxDecoration(
+                  color: Theme.of(context).primaryColor,
+                  borderRadius: BorderRadius.circular(12)),
+              child: const Icon(Icons.send_rounded, color: Colors.white),
             ),
-          )
+          ),
+          const Gap(8)
         ],
       ),
     );
@@ -345,7 +360,7 @@ class _TranslatorScreenState extends State<TranslatorScreen> {
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
           Text(
-            "Translate to ",
+            AppLocalizations.of(context)!.translateTo,
             style: Theme.of(context).textTheme.bodySmall,
           ),
           (tostate is TranslateToStatelanguage)
@@ -385,7 +400,7 @@ class _TranslatorScreenState extends State<TranslatorScreen> {
                     ? const SizedBox()
                     : (resultState is TranslateResultStateInitial)
                         ? Text(
-                            "Initialize...",
+                            AppLocalizations.of(context)!.initialize,
                             style: Theme.of(context).textTheme.bodyLarge,
                           )
                         : (resultState is TranslateResultStateError)
@@ -394,7 +409,7 @@ class _TranslatorScreenState extends State<TranslatorScreen> {
                                 style: Theme.of(context).textTheme.bodyLarge,
                               )
                             : Text(
-                                "Error to load data",
+                                AppLocalizations.of(context)!.translateError,
                                 style: Theme.of(context).textTheme.bodyLarge,
                               ));
   }
@@ -432,10 +447,14 @@ class _TranslatorScreenState extends State<TranslatorScreen> {
               if (resultState is TranslateResultStateSuccess) {
                 if (resultState.result.isNotEmpty) {
                   Clipboard.setData(ClipboardData(text: resultState.result))
-                      .then((value) {
-                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                        content: Text('Copied to your clipboard !')));
-                  });
+                      .then(
+                    (value) {
+                      ToastMessage.showCustomToast(
+                          context,
+                          AppLocalizations.of(context)!.copyMessage,
+                          const Color(0xFF373737));
+                    },
+                  );
                 }
               }
             },

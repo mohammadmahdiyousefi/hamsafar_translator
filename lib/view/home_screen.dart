@@ -1,3 +1,6 @@
+import 'dart:async';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:adivery/adivery.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:translator/bloc/conversation_bloc/conversation_bloc.dart';
@@ -6,6 +9,7 @@ import 'package:translator/di/di.dart';
 import 'package:translator/view/setting_sceen/setting_screen.dart';
 import 'package:translator/view/translator_screens/translator_screen.dart';
 import 'package:translator/view/conversation_screen/conversation_screen.dart';
+import 'package:translator/widget/prepare_interstitial_ad.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -16,8 +20,10 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   int index = 0;
+  Timer? adstimer;
   @override
   void initState() {
+    AdiveryPlugin.prepareInterstitialAd('37514faa-b896-40d2-9c67-a3a0308eb947');
     super.initState();
   }
 
@@ -60,47 +66,55 @@ class _HomeScreenState extends State<HomeScreen> {
         child: NavigationBar(
           selectedIndex: index,
           onDestinationSelected: (value) {
+            if (adstimer != null) {
+              adstimer!.cancel();
+            }
+
+            adstimer = Timer.periodic(const Duration(seconds: 5), (timer) {
+              showInterstitial();
+              adstimer!.cancel();
+            });
             setState(() {
               index = value;
             });
           },
-          destinations: const [
+          destinations: [
             NavigationDestination(
-                icon: Icon(
+                icon: const Icon(
                   Icons.translate,
                   color: Colors.white70,
                   size: 20,
                 ),
-                selectedIcon: Icon(
+                selectedIcon: const Icon(
                   Icons.translate,
                   color: Colors.white,
                   size: 20,
                 ),
-                label: "Translate"),
+                label: AppLocalizations.of(context)!.translateNavbar),
             NavigationDestination(
-                icon: Icon(
+                icon: const Icon(
                   Icons.record_voice_over,
                   color: Colors.white70,
                   size: 20,
                 ),
-                selectedIcon: Icon(
+                selectedIcon: const Icon(
                   Icons.record_voice_over,
                   color: Colors.white,
                   size: 20,
                 ),
-                label: "Conversation"),
+                label: AppLocalizations.of(context)!.conversationNavbar),
             NavigationDestination(
-                icon: Icon(
+                icon: const Icon(
                   Icons.settings,
                   color: Colors.white70,
                   size: 20,
                 ),
-                selectedIcon: Icon(
+                selectedIcon: const Icon(
                   Icons.settings,
                   color: Colors.white,
                   size: 20,
                 ),
-                label: "Setting")
+                label: AppLocalizations.of(context)!.settingNavbar)
           ],
         ),
       ),

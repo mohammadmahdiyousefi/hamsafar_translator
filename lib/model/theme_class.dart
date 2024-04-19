@@ -12,7 +12,7 @@ class CustomTheme {
         ),
         indicatorColor:
             const Color.fromARGB(255, 255, 255, 255).withOpacity(0.2),
-        backgroundColor: const Color(0xFF2A64F9),
+        backgroundColor: const Color(0xFF0842a0),
         labelTextStyle: MaterialStateTextStyle.resolveWith(
           (states) => const TextStyle(
               color: Color(0xFFFFFFFF),
@@ -29,6 +29,7 @@ class CustomTheme {
             fontSize: 18),
       ),
       listTileTheme: const ListTileThemeData(
+        contentPadding: EdgeInsets.symmetric(horizontal: 12),
         shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.all(Radius.circular(14))),
         tileColor: Color(0xFF28282a),
@@ -74,7 +75,7 @@ class CustomTheme {
       ),
       iconTheme: const IconThemeData(color: Colors.white),
       cardColor: const Color(0xFF28282a),
-      primaryColor: const Color(0xFF2A64F9),
+      primaryColor: const Color(0xFF0842a0),
       colorScheme: darkColorScheme);
 
   static final ThemeData lightTheme = ThemeData(
@@ -104,6 +105,7 @@ class CustomTheme {
             fontSize: 18),
       ),
       listTileTheme: const ListTileThemeData(
+        contentPadding: EdgeInsets.symmetric(horizontal: 12),
         shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.all(Radius.circular(14))),
         tileColor: Colors.white,
@@ -191,7 +193,7 @@ const darkColorScheme = ColorScheme(
   brightness: Brightness.dark,
   background: Color(0xFF1f1f1f),
   onBackground: Color(0xffedeff2),
-  primary: Color(0xFF2A64F9),
+  primary: Color(0xFF0842a0),
   onPrimary: Color(0xFF000F5C),
   primaryContainer: Color(0xFFDEE0FF),
   onPrimaryContainer: Color(0xFF000F5C),

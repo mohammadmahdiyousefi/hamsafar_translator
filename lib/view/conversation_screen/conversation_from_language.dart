@@ -2,9 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
 import 'package:translator/bloc/conversation_bloc/conversation_bloc.dart';
-import 'package:translator/bloc/theme/theme_bloc.dart';
-import 'package:translator/bloc/theme/theme_state.dart';
 import 'package:translator/model/list_of_country.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class ConversationFromLanguage extends StatefulWidget {
   const ConversationFromLanguage({super.key});
@@ -21,18 +20,19 @@ class _ConversationFromLanguageState extends State<ConversationFromLanguage> {
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.background,
       appBar: AppBar(
-          backgroundColor: Colors.transparent,
-          scrolledUnderElevation: 0,
-          title: Text("Language",
-              style: Theme.of(context).appBarTheme.titleTextStyle),
-          centerTitle: true,
-          leading: IconButton(
-            onPressed: () {
-              Navigator.pop(context);
-            },
-            icon: Icon(Icons.arrow_back_ios,
-                color: Theme.of(context).iconTheme.color),
-          )),
+        backgroundColor: Colors.transparent,
+        scrolledUnderElevation: 0,
+        title: Text(AppLocalizations.of(context)!.languageAppBar,
+            style: Theme.of(context).appBarTheme.titleTextStyle),
+        centerTitle: true,
+        leading: IconButton(
+          onPressed: () {
+            Navigator.pop(context);
+          },
+          icon: Icon(Icons.arrow_back_ios,
+              color: Theme.of(context).iconTheme.color),
+        ),
+      ),
       body: Column(
         children: [
           Container(
@@ -51,7 +51,7 @@ class _ConversationFromLanguageState extends State<ConversationFromLanguage> {
                 },
                 decoration: InputDecoration(
                     border: InputBorder.none,
-                    hintText: 'Search',
+                    hintText: AppLocalizations.of(context)!.searchHintText,
                     hintStyle:
                         Theme.of(context).listTileTheme.subtitleTextStyle,
                     prefixIcon: const Icon(

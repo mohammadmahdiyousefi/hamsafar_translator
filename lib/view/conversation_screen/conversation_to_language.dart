@@ -2,9 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
 import 'package:translator/bloc/conversation_bloc/conversation_bloc.dart';
-import 'package:translator/bloc/theme/theme_bloc.dart';
-import 'package:translator/bloc/theme/theme_state.dart';
 import 'package:translator/model/list_of_country.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class ConversationToLanguage extends StatefulWidget {
   const ConversationToLanguage({super.key});
@@ -22,7 +21,7 @@ class _ConversationToLanguageState extends State<ConversationToLanguage> {
       appBar: AppBar(
           backgroundColor: Colors.transparent,
           scrolledUnderElevation: 0,
-          title: Text("Language",
+          title: Text(AppLocalizations.of(context)!.languageAppBar,
               style: Theme.of(context).appBarTheme.titleTextStyle),
           centerTitle: true,
           leading: IconButton(
@@ -52,7 +51,7 @@ class _ConversationToLanguageState extends State<ConversationToLanguage> {
                 },
                 decoration: InputDecoration(
                     border: InputBorder.none,
-                    hintText: 'Search',
+                    hintText: AppLocalizations.of(context)!.searchHintText,
                     hintStyle:
                         Theme.of(context).listTileTheme.subtitleTextStyle,
                     prefixIcon: const Icon(
